@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import random
 import string
+import os
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key"  # Change this to something unique
@@ -197,7 +198,6 @@ def task():
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
-import os
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
