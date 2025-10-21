@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | AVreX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+ 
+  <div class="move"></div>
+    <span class="menu-btn" onclick="openSidebar()">☰</span>
+
+<!-- Sidebar -->
+<div id="mySidebar" class="sidebar">
+  <span class="close-btn" onclick="closeSidebar()">x</span>  </use>
+ <a href="home.html">Home</a>
+  <a href="dashboard.html">Dashboard</a>
+  <a href="sponsor.html">Sponsored Post</a>
+  <a href="/task">Tasks</a>
+  <a href="ads.html">Ads</a>
+  <a href="onlinecourse.html">Online Courses</a>
+  <a href="Whatsapp.html">Connect Whatsapp</a>
+  <a href="index.html">Log out</a>
+    </div>
+    
+  <div class="dashboard">
+    <h2>Welcome {{ user.username }}, <span id="username"></span>,</h2>
+
+    <div class="main-card">
+      <div class="btn1">
+        <button class="plan" class="glow-button">Current Package: <span id="plan"></span></button>
+      </div>
+      <p>Task Earnings</p>
+      <h3>₦<span id="taskEarnings"></span></h3>
+      <button class="btn2" type="button">Withdraw Funds</button>
+    </div>
+
+    <div class="stats">
+      <div class="box">
+        <p>Referral Bonus</p>
+        <h3>₦<span id="referralBonus"></span></h3>
+      </div>
+      <div class="box">
+        <p>Total Downline</p>
+        <h3><span id="totalDownlines"></span></h3>
+      </div>
+      <div class="box">
+        <p>Ads Bonus</p>
+        <h3>₦<span id="adsBonus"></span></h3>
+      </div>
+    </div>
+
+    <div class="whatsapp-box">
+      <p><strong>JOIN US ON WHATSAPP</strong></p>
+      <p>Get latest news at your fingertips.</p>
+      <a href="dashboard.html" class="join-btn">Join Group</a>
+    </div>
+
+    <div class="ref-box">
+      <p><strong>Your Referral Link</strong></p>
+      <span id="link"><input type="text" value=""></span>
+    </div>
+  </div>
+
+  <br><br><br><br>
+
+  <footer>
+    <div class="foot">
+      <nav>
+        <ul>
+          <li><a href="sponsor.html">♾️<br>SP</a></li>
+          <li><a href="/task">📜<br>Task</a></li>
+          <li class="current"><a href="dashboard.html">🏦<br>Dashboard</a></li>
+          <li><a href="ads.html">📻<br>Ads</a></li>
+          <li><a href="index.html">🔙<br>Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+<script>
+ function openSidebar() {
+    document.getElementById("mySidebar").style.width = "250px";
+  }
+
+  function closeSidebar() {
+    document.getElementById("mySidebar").style.width = "0";
+  }
+
+</script>
+
+    {% if user.role == 'admin' %}
+      <a href="/admin" class="btn">Go to Admin Panel</a>
+    {% endif %}
+    <a href="/logout" class="btn logout">Logout</a>
+  </div>
+</body>
+</html>

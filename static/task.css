@@ -1,0 +1,131 @@
+body {
+    background: darkblue;
+    margin: 0;
+}
+
+.container{
+    background: white; 
+    width: 95%;
+    height: 410px;
+    border-radius: 15px;
+    margin: 0 auto;
+}
+
+.text{
+    text-align: center;
+}
+
+p{
+    margin-left: 7px;
+}
+
+button{
+    width: 45%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 25px;
+    border: none;
+    margin-left: 8px;
+}
+
+.container2{
+    background: white; 
+    width: 95%;
+    height: 320px;
+    border-radius: 15px;
+    margin: 0 auto;
+}
+
+a{
+    text-decoration: none;
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 55px;
+    background: white;
+    margin: 0;
+    color: white;
+    margin-top:-22px;
+    padding: -90px;
+    padding-bottom: 5px;
+    font-size: 13px;
+    
+ul{
+    margin-left: -24px;
+}
+}
+
+footer li{
+    float: left;
+    display: inline;
+    padding:0 20px 0 20px;
+    margin-left: -14px;
+    
+}
+
+nav{
+    text-align: center;
+}
+
+.current{
+    background: gold;
+    opacity: 0.8;
+}
+}
+
+.container1{
+    background: ; 
+    width: 98%;
+    height: 140px;
+    border-radius: 15px;
+    margin: 0 auto;
+}
+
+.sp{
+    background: rgba(0,0,1000000,1); 
+    width: 90%;
+    padding: 2px;
+    border-radius: 10px;
+    margin: 0 auto;
+    margin-top: 20px;
+    color: white;
+    
+    
+h3{
+    text-align: center;
+    
+}
+
+p{
+    text-align: center;
+    font-weight: bolder;
+}
+
+ul{
+    width: 81%;
+}
+
+.branding{
+    background: blue;
+    color: white;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.branding2{
+    background: green;
+    color: white;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.branding3{
+    background: red;
+    color: white;
+    text-align: center;
+    opacity: 0.9;
+}
+}

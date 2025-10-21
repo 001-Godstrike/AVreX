@@ -1,0 +1,236 @@
+body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: darkblue;
+      color: darkblue;
+      margin: 0 auto;
+    }
+
+.move{
+    position: right;
+}
+
+    /* Sidebar styling */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: rgba(2,6,2,0.9);
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-top: 60px;
+    }
+
+    .sidebar a {
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      color: gold;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: gold;
+      color: green;
+    }
+
+    /* Menu button */
+    .menu-btn {
+      font-size: 25px;
+      color: gold;
+      cursor: pointer;
+      padding: 10px;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: rgba(2,6,2,0.4);
+      border-radius: 50%;
+    }
+
+    /* Close button */
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 36px;
+      color: whitesmoke;
+      cursor: pointer;
+    }
+    
+ .close-btn:hover{
+     background: gold;
+     color: green;
+ }
+
+.box2{
+    border: none;
+    padding: 2px;
+    text-align: center;
+    
+button{
+    background: ;
+    color: white;
+    font-size: 15px;
+    border: none;
+}
+}
+
+.dashboard {
+  padding: 20px;
+}
+
+.dashboard h2 {
+    color: white;
+}
+
+.main-card {
+  background: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+ 
+  .btn2{
+    border-color: #11ff00;
+    color: darkblue;
+}
+
+.tn1{
+    background: gold;
+    width: 90%;
+}
+
+.plan{
+    font-size: 15px;
+    background: darkblue;
+    color: cyan;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 10px gold;
+    animation: pulseGlow 5s infinite;
+}
+  }
+
+}
+
+.main-card h1 {
+  margin: 10px 0;
+  font-size: 32px;
+}
+
+.main-card button {
+  background: transparent;
+  border: 1px solid #fff;
+  color: darkblue;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.box {
+  background: whitesmoke;
+  padding: 5px;
+  border-radius: 10px;
+  flex: 1;
+  text-align: center;
+}
+
+.whatsapp-box, .ref-box {
+  background: whitesmoke;
+  color: darkblue;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+.join-btn {
+  display: block;
+  margin-top: 10px;
+  background: whitesmoke;
+  color: gold;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.ref-box input {
+  width: 95%;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 5px;
+  border: none;
+}
+
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 55px;
+    background: white;
+    margin: 0;
+    color: white;
+    margin-top:-22px;
+    padding: -90px;
+    padding-bottom: 5px;
+    font-size: 13px;
+ul{
+    margin-left: -24px;
+}
+}
+
+footer li{
+    float: left;
+    display: inline;
+    padding:0 20px 0 20px;
+    margin-left: -14px;
+    
+}
+
+nav{
+    text-align: center;
+}
+
+.current{
+    background: gold;
+    opacity: 0.8;
+    padding-bottom: 5px;
+    
+}
+
+a{
+    text-decoration: none;
+}
+}
+
+.glow-button {
+  background: #ff9315;
+  color: black;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 10px gold;
+  animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 5px darkblue; }
+  10%   { box-shadow: 0 0 7px darkblue; }
+  20%   { box-shadow: 0 0 9px darkblue; }
+  30%   { box-shadow: 0 0 11px darkblue; }
+  40%   { box-shadow: 0 0 13px darkblue; }
+  50%  { box-shadow: 0 0 20px darkblue; }
+  100% { box-shadow: 0 0 30px darkblue; }
+}
+

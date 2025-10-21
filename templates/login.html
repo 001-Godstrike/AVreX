@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | AVreX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <form action="/login" method="POST" class="form">
+      <h1>AVreX Login</h1>
+      <input type="email" name="email" placeholder="@ Email" required>
+      <input type="password" name="password" placeholder="🔐 Password" required>
+
+      <button type="submit">Login</button>
+      <p>New to AVreX? <a href="/signup">Sign up here</a></p>
+    </form>
+  </div>
+</body>
+</html>

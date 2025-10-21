@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVreX Admin Panel</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #0a0f2c;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #001a66;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h2 {
+            margin: 0;
+            color: #00b7ff;
+        }
+        .logout {
+            color: white;
+            background: #e60000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .logout:hover { background: #ff3333; }
+
+        .container {
+            padding: 25px;
+        }
+        h3 {
+            color: #00b7ff;
+            border-bottom: 2px solid #00b7ff;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #10163a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #1c245c;
+        }
+        th {
+            background: #0d1a40;
+            color: #00b7ff;
+        }
+        tr:hover {
+            background: #1a245c;
+        }
+        form {
+            display: inline;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            margin-right: 8px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+        button {
+            background: #00b7ff;
+            border: none;
+            color: white;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0099cc;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>⚙️ AVreX Admin Dashboard</h2>
+    <a class="logout" href="/logout">Logout</a>
+</header>
+
+<div class="container">
+
+    <h3>👥 Registered Users</h3>
+    <table>
+        <tr>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Access Key</th>
+            <th>Referral</th>
+            <th>Role</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+            <td>{{ user[3] }}</td>
+            <td>{{ user[4] }}</td>
+            <td>{{ user[5] }}</td>
+            <td>{{ user[6] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><br>
+
+    <h3>🔑 Access Keys</h3>
+    <form method="POST" action="/add_keys">
+        <input type="number" name="num_keys" min="1" placeholder="Count">
+        <button type="submit">➕ Add Keys</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>Access Key</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for key, used in keys %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ "✅ Used" if used else "❌ Not Used" }}</td>
+            <td>
+                <form method="POST" action="/delete_key/{{ key }}">
+                    <button type="submit">🗑️ Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+<a href="/dashboard">Dashboard</a>
+
+<footer>
+    AVreX Admin Panel © 2025 | Built for speed ⚡
+</footer>
+
+</body>
+</html>

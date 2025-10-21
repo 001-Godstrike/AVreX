@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | AVreX</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <form action="/signup" method="POST" class="form">
+      <h1>AVreX</h1>
+      <p class="tagline">Making <b>money</b> is now a <b>reality</b></p>
+
+      <input type="text" name="fullname" placeholder="👤 Full Name" required>
+      <input type="text" name="username" placeholder="👤 Username" required>
+      <input type="tel" name="phone" placeholder="📞 Phone Number" required>
+      <input type="email" name="email" placeholder="@ Email" required>
+      <input type="text" name="access_key" placeholder="🔑 Access Key" required>
+      <input type="text" name="referral" placeholder="👥 Referral Username (optional)">
+      <input type="password" name="password" placeholder="🔐 Password" required>
+
+      <button type="submit">Sign Up</button>
+      <p>Already have an account? <a href="/login">Login here</a></p>
+    </form>
+  </div>
+</body>
+</html>
