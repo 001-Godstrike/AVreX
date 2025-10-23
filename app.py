@@ -3,10 +3,19 @@ import sqlite3
 import random
 import string
 import os
+from werkzeug.utils import secure_filename
+import csv
+from flask import send_file, make_response
+from io import StringIO
 
 app = Flask(__name__)
-app.secret_key = "super_secret_key"  # Change this to something unique
+app.secret_key = "super_secret_key"
 DB = "users.db"
+
+# Upload directory
+UPLOAD_FOLDER = 'static/uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ----------------------------
 # DATABASE INITIALIZATION
@@ -14,7 +23,8 @@ DB = "users.db"
 def init_db():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-    # Create users table
+
+    # Users table
     c.execute('''CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         fullname TEXT,
@@ -26,12 +36,34 @@ def init_db():
         password TEXT,
         role TEXT DEFAULT 'user'
     )''')
-    # Create access keys table
+
+    # Access keys table
     c.execute('''CREATE TABLE IF NOT EXISTS access_keys (
         key TEXT PRIMARY KEY,
         used BOOLEAN DEFAULT 0
     )''')
-    # Insert 100 random keys if empty
+
+    # Balances table
+    c.execute('''CREATE TABLE IF NOT EXISTS balances (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT UNIQUE,
+        task_earnings REAL DEFAULT 10000,
+        referral_bonus REAL DEFAULT 0,
+        ads_bonus REAL DEFAULT 0,
+        total_downlines INTEGER DEFAULT 0
+    )''')
+
+    # Ads table
+    c.execute('''CREATE TABLE IF NOT EXISTS ads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT,
+        image_url TEXT,
+        description TEXT,
+        cost INTEGER DEFAULT 0,
+        FOREIGN KEY (user_email) REFERENCES users(email)
+    )''')
+
+    # Insert random access keys if none exist
     c.execute('SELECT COUNT(*) FROM access_keys')
     if c.fetchone()[0] == 0:
         keys = set()
@@ -39,9 +71,10 @@ def init_db():
             key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
             keys.add(key)
         c.executemany('INSERT INTO access_keys (key, used) VALUES (?, 0)', [(k,) for k in keys])
+        print(f"[INIT] Added {len(keys)} access keys.")
+
     conn.commit()
     conn.close()
-
 
 # ----------------------------
 # ROUTES
@@ -49,7 +82,6 @@ def init_db():
 @app.route('/')
 def home():
     return redirect(url_for('signup'))
-
 
 # ---------- SIGNUP ----------
 @app.route('/signup', methods=['GET', 'POST'])
@@ -76,18 +108,21 @@ def signup():
             conn.close()
             return "Access Key Already Used ❌"
 
-        # Insert user
+        # Insert new user
         c.execute('INSERT INTO users (fullname, username, email, phone, access_key, referral, password) VALUES (?, ?, ?, ?, ?, ?, ?)',
                   (fullname, username, email, phone, access_key, referral, password))
 
         # Mark access key as used
         c.execute('UPDATE access_keys SET used=1 WHERE key=?', (access_key,))
+
+        # Create default balance record
+        c.execute('INSERT OR IGNORE INTO balances (user_email) VALUES (?)', (email,))
+
         conn.commit()
         conn.close()
         return redirect(url_for('login'))
 
     return render_template('signup.html')
-
 
 # ---------- LOGIN ----------
 @app.route('/login', methods=['GET', 'POST'])
@@ -121,16 +156,28 @@ def login():
 
     return render_template('login.html')
 
-
 # ---------- DASHBOARD ----------
 @app.route('/dashboard')
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html', user=session['user'])
 
+    user = session['user']
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT task_earnings, referral_bonus, ads_bonus, total_downlines FROM balances WHERE user_email=?', (user['email'],))
+    balances = c.fetchone()
 
-# ---------- ADMIN PANEL ----------
+    if not balances:
+        c.execute('INSERT INTO balances (user_email) VALUES (?)', (user['email'],))
+        conn.commit()
+        c.execute('SELECT task_earnings, referral_bonus, ads_bonus, total_downlines FROM balances WHERE user_email=?', (user['email'],))
+        balances = c.fetchone()
+
+    conn.close()
+    return render_template('dashboard.html', user=user, balances=balances)
+
+# ---------- ADMIN ----------
 @app.route('/admin')
 def admin_panel():
     if 'user' not in session or session['user'].get('role') != 'admin':
@@ -143,43 +190,69 @@ def admin_panel():
     c.execute('SELECT key, used FROM access_keys')
     keys = c.fetchall()
     conn.close()
-
     return render_template('admin.html', users=users, keys=keys)
 
+# ---------- POST AD ----------
+@app.route('/post_ad', methods=['GET'])
+def post_ad():
+    if 'user' not in session:
+        return redirect(url_for('login'))
 
-# ---------- ADD NEW KEYS ----------
-@app.route('/add_keys', methods=['POST'])
-def add_keys():
-    try:
-        num_keys = int(request.form['num_keys'])
-    except ValueError:
-        num_keys = 1
+    user = session['user']
 
-    new_keys = set()
-    while len(new_keys) < num_keys:
-        key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-        new_keys.add(key)
+    # Fetch user's actual balance
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT task_earnings FROM balances WHERE user_email=?', (user['email'],))
+    balance = c.fetchone()
+    conn.close()
+
+    if not balance:
+        balance = (0,)
+
+    # Pass both user and real balance to the page
+    return render_template('post_ad.html', user=user, balance=balance[0])
+
+
+# ---------- SUBMIT AD ----------
+@app.route('/submit_ad', methods=['POST'])
+def submit_ad():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    image = request.files['image']
+    description = request.form['content']
+    user_email = session['user']['email']
 
     conn = sqlite3.connect(DB)
     c = conn.cursor()
-    c.executemany('INSERT INTO access_keys (key, used) VALUES (?, 0)', [(k,) for k in new_keys])
-    conn.commit()
-    conn.close()
 
-    print(f"[ADMIN] Added {num_keys} new access keys.")
-    return redirect(url_for('admin_panel'))
+    # Check user’s current balance
+    c.execute('SELECT task_earnings FROM balances WHERE user_email=?', (user_email,))
+    balance = c.fetchone()
 
+    # Validate balance
+    if not balance or balance[0] < 7000:
+        conn.close()
+        return "❌ Insufficient balance. You need at least 7000 AVreX points (≈₦2800)."
 
-# ---------- DELETE KEY ----------
-@app.route('/delete_key/<key>', methods=['POST'])
-def delete_key(key):
-    conn = sqlite3.connect(DB)
-    c = conn.cursor()
-    c.execute('DELETE FROM access_keys WHERE key=?', (key,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('admin_panel'))
+    # Handle image upload
+    if image:
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
 
+        # Deduct points & store ad info
+        c.execute('UPDATE balances SET task_earnings = task_earnings - 7000 WHERE user_email=?', (user_email,))
+        c.execute('INSERT INTO ads (user_email, image_url, description, cost) VALUES (?, ?, ?, ?)',
+                  (user_email, image_path, description, 7000))
+        conn.commit()
+        conn.close()
+
+        return "✅ Ad posted successfully — 7000 AVreX points deducted!"
+    else:
+        conn.close()
+        return "❌ Please upload an image."
 
 # ---------- LOGOUT ----------
 @app.route('/logout')
@@ -192,10 +265,69 @@ def logout():
 def task():
     return render_template('task.html')
 
-# ----------------------------
-# MAIN EXECUTION
-# ----------------------------
+
+# ---------- VIEW ADS (ADMIN) ----------
+@app.route('/view_ads')
+def view_ads():
+    if 'user' not in session or session['user'].get('role') != 'admin':
+        return "❌ Access Denied. Admins Only."
+
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT id, image_url, description, cost, user_email FROM ads ORDER BY id DESC')
+    ads = c.fetchall()
+    conn.close()
+
+    total_ads = len(ads)
+    return render_template('view_ads.html', ads=ads, total_ads=total_ads)
+
+
+# ---------- DOWNLOAD ADS (CSV) ----------
+@app.route('/download_ads')
+def download_ads():
+    if 'user' not in session or session['user'].get('role') != 'admin':
+        return "❌ Access Denied. Admins Only."
+
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT id, user_email, image_url, description, cost FROM ads')
+    ads = c.fetchall()
+    conn.close()
+
+    si = StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['ID', 'User Email', 'Image URL', 'Description', 'Cost'])
+    cw.writerows(ads)
+
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=AVreX_Ads.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+
+
+# ---------- DELETE AD ----------
+@app.route('/delete_ad/<int:ad_id>', methods=['POST'])
+def delete_ad(ad_id):
+    if 'user' not in session or session['user'].get('role') != 'admin':
+        return "❌ Access Denied. Admins Only."
+
+    conn = sqlite3.connect(DB)
+    c = conn.cursor()
+    c.execute('SELECT image_url FROM ads WHERE id=?', (ad_id,))
+    ad = c.fetchone()
+
+    if ad:
+        image_path = ad[0]
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        c.execute('DELETE FROM ads WHERE id=?', (ad_id,))
+        conn.commit()
+
+    conn.close()
+    return redirect(url_for('view_ads'))
+
+# ---------- MAIN ----------
 if __name__ == '__main__':
     init_db()
-    port = int(os.environ.get('PORT', 10000))  # Render sets this automatically
+    port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Manage Ads - AVreX</title>
+  <style>
+    body {
+      background: #011233;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      text-align: center;
+      background: #002b80;
+      padding: 15px;
+      border-radius: 12px;
+      margin: 15px auto;
+      width: 90%;
+      font-size: 20px;
+    }
+
+    .ads-count {
+      text-align: center;
+      font-weight: bold;
+      margin-top: -5px;
+      color: gold;
+    }
+
+    .ads-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px auto 80px auto;
+      width: 95%;
+    }
+
+    .ad-card {
+      background: white;
+      color: black;
+      width: 95%;
+      max-width: 350px;
+      border-radius: 15px;
+      padding: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ad-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .ad-content {
+      padding: 8px;
+    }
+
+    .ad-content p {
+      margin: 4px 0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .btn {
+      background: gold;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      padding: 7px 10px;
+      text-align: center;
+      cursor: pointer;
+      flex: 1;
+      text-decoration: none;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: orange;
+    }
+
+    .copy {
+      background: #0077ff;
+      color: white;
+    }
+
+    .copy:hover {
+      background: #005ad4;
+    }
+
+    .delete {
+      background: red;
+      color: white;
+    }
+
+    .delete:hover {
+      background: darkred;
+    }
+
+    .download-btn {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+      text-align: center;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .download-btn:hover {
+      background: orange;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 55px;
+      background: white;
+      color: black;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    footer nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    footer nav ul li {
+      margin: 0 10px;
+      font-size: 13px;
+    }
+
+    footer nav ul li a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .current {
+      background: gold;
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📢 All User Ads (Admin View)</h2>
+  <p class="ads-count">Total Ads Posted: {{ total_ads }}</p>
+  <a href="/download_ads" class="download-btn">⬇️ Download All Ads (CSV)</a>
+
+  <div class="ads-container">
+    {% if ads %}
+      {% for ad in ads %}
+        <div class="ad-card">
+          <img src="{{ url_for('static', filename=ad[1].replace('static/', '')) }}" alt="Ad Image">
+          <div class="ad-content">
+            <p><strong>Posted by:</strong> {{ ad[4] }}</p>
+            <p><strong>Cost:</strong> {{ ad[3] }} AVreX Points</p>
+            <p id="desc{{ loop.index }}"><strong>Description:</strong><br>{{ ad[2] }}</p>
+            <div class="actions">
+              <a href="{{ url_for('static', filename=ad[1].replace('static/', '')) }}" download class="btn">⬇️ Image</a>
+              <button class="btn copy" onclick="copyText('desc{{ loop.index }}')">📋 Copy</button>
+              <form action="/delete_ad/{{ ad[0] }}" method="POST" onsubmit="return confirm('Delete this ad permanently?')" style="flex:1;">
+                <button type="submit" class="btn delete">🗑 Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="text-align:center;">No ads have been posted yet.</p>
+    {% endif %}
+  </div>
+
+  <footer>
+    <nav>
+      <ul>
+        <li><a href="/dashboard">🏦 Dashboard</a></li>
+        <li><a href="/admin">🛠 Admin</a></li>
+        <li class="current"><a href="/view_ads">📢 View Ads</a></li>
+        <li><a href="/logout">🚪 Logout</a></li>
+      </ul>
+    </nav>
+  </footer>
+
+  <script>
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text)
+        .then(() => alert("✅ Ad write-up copied!"))
+        .catch(() => alert("❌ Failed to copy text."));
+    }
+  </script>
+
+</body>
+</html>

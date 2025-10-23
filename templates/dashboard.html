@@ -8,60 +8,65 @@
 </head>
 
 <body>
- 
-  <div class="move"></div>
-    <span class="menu-btn" onclick="openSidebar()">☰</span>
 
-<!-- Sidebar -->
-<div id="mySidebar" class="sidebar">
-  <span class="close-btn" onclick="closeSidebar()">x</span>  </use>
- <a href="home.html">Home</a>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="sponsor.html">Sponsored Post</a>
-  <a href="/task">Tasks</a>
-  <a href="ads.html">Ads</a>
-  <a href="onlinecourse.html">Online Courses</a>
-  <a href="Whatsapp.html">Connect Whatsapp</a>
-  <a href="index.html">Log out</a>
-    </div>
-    
+  <div class="move"></div>
+  <span class="menu-btn" onclick="openSidebar()">☰</span>
+
+  <!-- Sidebar -->
+  <div id="mySidebar" class="sidebar">
+    <span class="close-btn" onclick="closeSidebar()">x</span>
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/task">Tasks</a>
+    <a href="/post_ad">Post Ads</a>
+    <a href="/onlinecourse">Online Courses</a>
+    <a href="/whatsapp">Connect Whatsapp</a>
+    <a href="/logout">Logout</a>
+  </div>
+
   <div class="dashboard">
-    <h2>Welcome {{ user.username }}, <span id="username"></span>,</h2>
+    <h2>Welcome {{ user.username }},</h2>
 
     <div class="main-card">
       <div class="btn1">
-        <button class="plan" class="glow-button">Current Package: <span id="plan"></span></button>
+        <button class="plan">Current Package: <span id="plan">AVreX Basic</span></button>
       </div>
+
       <p>Task Earnings</p>
-      <h3>₦<span id="taskEarnings"></span></h3>
+      <h3>AVX{{ "%.2f"|format(balances[0]) }}</h3>
       <button class="btn2" type="button">Withdraw Funds</button>
     </div>
 
     <div class="stats">
       <div class="box">
         <p>Referral Bonus</p>
-        <h3>₦<span id="referralBonus"></span></h3>
+        <h3>AVX{{ "%.2f"|format(balances[1]) }}</h3>
       </div>
       <div class="box">
         <p>Total Downline</p>
-        <h3><span id="totalDownlines"></span></h3>
+        <h3>{{ balances[3] }}</h3>
       </div>
       <div class="box">
         <p>Ads Bonus</p>
-        <h3>₦<span id="adsBonus"></span></h3>
+        <h3>AVX{{ "%.2f"|format(balances[2]) }}</h3>
       </div>
     </div>
 
     <div class="whatsapp-box">
       <p><strong>JOIN US ON WHATSAPP</strong></p>
       <p>Get latest news at your fingertips.</p>
-      <a href="dashboard.html" class="join-btn">Join Group</a>
+      <a href="#" class="join-btn">Join Group</a>
     </div>
 
     <div class="ref-box">
       <p><strong>Your Referral Link</strong></p>
-      <span id="link"><input type="text" id="refLink" value="https://avrex-1.onrender.com/signup?ref={{ user.username }}" readonly></span>
-      <button style="background: green; color: white; width: 40%; border: none; border-radius: 15px; height: 35px; font-size: 17px; font-weight: bolder; text-align: center; " class="button" onclick="copyRefLink()">Copy Link</button>
+      <span id="link">
+        <input type="text" id="refLink"
+          value="https://avrex-1.onrender.com/signup?ref={{ user.username }}" readonly>
+      </span>
+      <button
+        style="background: green; color: white; width: 40%; border: none; border-radius: 15px; height: 35px; font-size: 17px; font-weight: bolder;"
+        class="button" onclick="copyRefLink()">Copy Link</button>
     </div>
   </div>
 
@@ -71,38 +76,38 @@
     <div class="foot">
       <nav>
         <ul>
-          <li><a href="sponsor.html">♾️<br>SP</a></li>
+          <li><a href="/sponsor">♾️<br>SP</a></li>
           <li><a href="/task">📜<br>Task</a></li>
-          <li class="current"><a href="dashboard.html">🏦<br>Dashboard</a></li>
-          <li><a href="ads.html">📻<br>Ads</a></li>
-          <li><a href="index.html">🔙<br>Log out</a></li>
+          <li class="current"><a href="/dashboard">🏦<br>Dashboard</a></li>
+          <li><a href="/ads">📻<br>Ads</a></li>
+          <li><a href="/logout">🔙<br>Log out</a></li>
         </ul>
       </nav>
     </div>
   </footer>
 
-<script>
- function openSidebar() {
-    document.getElementById("mySidebar").style.width = "250px";
-  }
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
 
-  function closeSidebar() {
-    document.getElementById("mySidebar").style.width = "0";
-  }
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
 
-  function copyRefLink() {
-    const refInput = document.getElementById("refLink");
-    refInput.select();
-    refInput.setSelectionRange(0, 99999); // For mobile
-    document.execCommand("copy");
-    alert("Referral link copied!");
-  }
-</script>
+    function copyRefLink() {
+      const refInput = document.getElementById("refLink");
+      refInput.select();
+      refInput.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
+  </script>
 
-    {% if user.role == 'admin' %}
-      <a href="/admin" class="btn">Go to Admin Panel</a>
-    {% endif %}
-    <a href="/logout" class="btn logout">Logout</a>
-  </div>
+  {% if user.role == 'admin' %}
+  <a href="/admin" class="btn">Go to Admin Panel</a>
+  {% endif %}
+  <a href="/logout" class="btn logout">Logout</a>
+
 </body>
 </html>

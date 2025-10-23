@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create an Ad</title>
+</head>
+<body>
+  <h2>Create a New Ad</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <label>Ad Image:</label><br>
+    <input type="file" name="image" accept="image/*" required><br><br>
+
+    <label>Ad Content:</label><br>
+    <textarea name="content" rows="5" cols="40" placeholder="Write your ad content here..." required></textarea><br><br>
+
+    <button type="submit">Submit Ad</button>
+  </form>
+</body>
+</html>
